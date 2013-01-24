@@ -18,6 +18,15 @@
 		<div id="map" style="height: 600px"></div>
 		<script>
 			map = new ps2hq.Map('map');
+			map.on('sector-over', function(ev) {
+				console.dir(ev);
+			});
+			map.on('sector-click', function(ev) {
+				console.dir(ev);
+			});
+			map.on('sector-out', function(ev) {
+				console.dir(ev);
+			});
 		</script>
 	</body>
 </html>

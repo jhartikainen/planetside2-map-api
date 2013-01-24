@@ -56,13 +56,22 @@ ps2hq.Map = L.Map.extend({
 			amerish: new ps2hq.map.TileLayer('amerish')
 		};
 
+		var self = this;
 		this._sectorLayer = new ps2hq.map.SectorLayer();
+		this._sectorLayer.on('sector-over', function(ev) {
+			self.fireEvent('sector-over', ev);
+		});
+		this._sectorLayer.on('sector-click', function(ev) {
+			self.fireEvent('sector-click', ev);
+		});
+		this._sectorLayer.on('sector-out', function(ev) {
+			self.fireEvent('sector-out', ev);
+		});
 		this.showSectors(options.sectors);
 
 		this.setContinent(options.continent);
 
 		var layersCtrl = new ps2hq.map.LayerControl();
-		var self = this;
 		layersCtrl.on('changecontinent', function(ev) {
 			self.setContinent(ev.continent);
 		});
@@ -197,6 +206,8 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		color: 'black'
 	},
 
+	includes: L.Mixin.Events,
+
 	initialize: function(offset, options) {
 		this.offset = offset;
 		this.polyOptions = L.Util.extend(this.polyOptions, options);
@@ -226,16 +237,25 @@ ps2hq.map.SectorLayer = L.Class.extend({
 
 		var hexes = [];
 		var sectors = this._sectors;
+		var self = this;
 		for(var i = 0; i < sectors.length; i++) {
-			try {
-			var pg = this._hexGroup(sectors[i].hexes);
-			var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
-			var p = new L.Polygon(lats, this.polyOptions);
-			p.on('click', function(ev) {
-				console.log(ev.latlng.toString());
-			});
-			hexes.push(p);
-			} catch(ex) { console.log(ex); } 
+			(function(sector) {
+				try {
+					var pg = self._hexGroup(sector.hexes);
+					var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
+					var p = new L.Polygon(lats, self.polyOptions);
+					p.on('click', function(ev) {
+						self.fireEvent('sector-click', { sector: sector });
+					});
+					p.on('mouseover', function(ev) {
+						self.fireEvent('sector-over', { sector: sector });
+					});
+					p.on('mouseout', function(ev) {
+						self.fireEvent('sector-out', { sector: sector });
+					});
+					hexes.push(p);
+				} catch(ex) { console.log(ex); } 
+			})(sectors[i]);
 		}
 
 		if(this.lg) {

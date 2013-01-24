@@ -22,9 +22,15 @@ ps2hq.Map = L.Map.extend({
 		})
 	},
 
+	_tilelayers: { },
+	_currentTilelayer: null,
+	_sectorLayer: null,
+	_sectorsVisible: false,
+
 	initialize: function(container, options) {
 		options = L.Util.extend({
-			sectors: true
+			sectors: true,
+			continent: ps2hq.map.MapContinent.INDAR
 		}, options);
 
 		L.Map.prototype.initialize.call(this, container);
@@ -33,8 +39,7 @@ ps2hq.Map = L.Map.extend({
 		});
 		this.setView([0, 0], 3);
 
-		var l = new ps2hq.map.TileLayer('indar');
-		l.addTo(this);
+
 		var canvasTiles = L.tileLayer.canvas();
 		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
 			var ctx = canvas.getContext('2d');
@@ -45,9 +50,50 @@ ps2hq.Map = L.Map.extend({
 		};
 		//canvasTiles.addTo(this.map);
 
-		if(options.sectors) {
-			this.addLayer(new ps2hq.map.SectorLayer());
+		this._tilelayers = {
+			indar: new ps2hq.map.TileLayer('indar'),
+			esamir: new ps2hq.map.TileLayer('esamir'),
+			amerish: new ps2hq.map.TileLayer('amerish')
+		};
+
+		this._sectorLayer = new ps2hq.map.SectorLayer();
+		this.showSectors(options.sectors);
+
+		this.setContinent(options.continent);
+
+		var layersCtrl = new ps2hq.map.LayerControl();
+		var self = this;
+		layersCtrl.on('changecontinent', function(ev) {
+			self.setContinent(ev.continent);
+		});
+		layersCtrl.addTo(this);
+	},
+
+	showSectors: function(show) {
+		if(show) {
+			if(!this._sectorsVisible) {
+				this.addLayer(this._sectorLayer);
+			}
 		}
+		else {
+			if(this._sectorsVisible) {
+				this.removeLayer(this._sectorLayer);
+			}
+		}
+
+		this._sectorsVisible = !!show;
+	},
+
+	setContinent: function(continent) {
+		if(this._currentTilelayer) {
+			this.removeLayer(this._currentTilelayer);
+		}
+
+		this.addLayer(this._tilelayers[continent]);
+
+		this._currentTilelayer = this._tilelayers[continent];
+
+		this._sectorLayer.setContinent(continent);
 	}
 });
 
@@ -56,6 +102,43 @@ ps2hq.map.MapContinent = {
 	ESAMIR: 'esamir',
 	AMERISH: 'amerish'
 };
+
+ps2hq.map.LayerControl = L.Control.extend({
+	options: {
+		position: 'topright'
+	},
+
+	includes: L.Mixin.Events,
+
+	onAdd: function(map) {
+		var container = L.DomUtil.create('div', 'layer-control');
+
+		var self = this;
+		['indar', 'esamir', 'amerish'].forEach(function(cont) {
+			var label = document.createElement('label');
+
+			var radio = document.createElement('input');
+			radio.type = 'radio';
+			radio.name = 'mapcontinent';
+			radio.value = cont;
+			radio.onclick = function() {
+				self._changeContinent(cont);
+			};
+
+			label.appendChild(radio);
+
+			label.appendChild(document.createTextNode(cont));
+
+			container.appendChild(label);
+		});
+
+		return container;
+	},
+
+	_changeContinent: function(cont) {
+		this.fireEvent('changecontinent', { continent: cont });
+	}
+});
 
 ps2hq.map.TileLayer = L.TileLayer.extend({
 	options: {
@@ -117,9 +200,18 @@ ps2hq.map.SectorLayer = L.Class.extend({
 	initialize: function(offset, options) {
 		this.offset = offset;
 		this.polyOptions = L.Util.extend(this.polyOptions, options);
+		this._sectors = sectorsIndar;
+	},
+
+	setContinent: function(continent) {
+		this._sectors = ({ indar: sectorsIndar, amerish: sectorsAmerish, esamir: sectorsEsamir })[continent];
+		this.onAdd();
 	},
 
 	onAdd: function(map) {
+		map = map || this._map;
+		this._map = map;
+
 		function flatten(hexgroup) {
 			var result = [];
 			for(var i = 0; i < hexgroup.length; i++) {
@@ -133,6 +225,7 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		}
 
 		var hexes = [];
+		var sectors = this._sectors;
 		for(var i = 0; i < sectors.length; i++) {
 			try {
 			var pg = this._hexGroup(sectors[i].hexes);
@@ -143,6 +236,10 @@ ps2hq.map.SectorLayer = L.Class.extend({
 			});
 			hexes.push(p);
 			} catch(ex) { console.log(ex); } 
+		}
+
+		if(this.lg) {
+			map.removeLayer(this.lg);
 		}
 
 		this.lg = new L.LayerGroup(hexes);

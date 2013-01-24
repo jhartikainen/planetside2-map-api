@@ -2,57 +2,86 @@ if(!window.ps2hq) {
 	window.ps2hq = { };
 }
 
-ps2hq.Map = function(container) {
-	var scale = function(zoom) {
-		//0.03125 = number of units per tile = 256 / 8192
-		//256 = tile size, 8192 = total map size
-		return 1 / (0.03125 / Math.pow(2, zoom));
-	};
+if(!ps2hq.map) {
+	ps2hq.map = { };
+}
 
-	this.map = L.map(container, {
+ps2hq.Map = L.Map.extend({
+	options: {
 		continuousWorld: true,
 		worldCopyJump: false,
-		scale: scale,
 		crs: L.Util.extend({}, L.CRS, {
 			code: 'asf',
 			projection: L.Projection.LonLat,
 			transformation: new L.Transformation(1, 0, 1, 0),
-			scale: scale
+			scale: function(zoom) {
+				//0.03125 = number of units per tile = 256 / 8192
+				//256 = tile size, 8192 = total map size
+				return 1 / (0.03125 / Math.pow(2, zoom));
+			}		
 		})
-	});
+	},
 
-	this.map.on('click', function(ev) {
-		console.log(ev.latlng.toString());
-	});
-	/*, { 
-		worldCopyJump: false,
-		continuousWorld: true,
-		crs: L.Util.extend({}, L.CRS, { 
-			code: 'Lol',
-			projection: L.Projection.LonLat,
-			transformation: new SquareMapTransform(64, 64, 1, 64, 64, 1)
-		})/*,
-		scale: function(zoom) {
-			return 1 / (0.03125 / Math.pow(2, zoom));
-		}*/
-	/*});*/
-	this.map.setView([0, 0], 3);
+	initialize: function(container, options) {
+		options = L.Util.extend({
+			sectors: true
+		}, options);
 
-	var l = L.tileLayer('http://map-images.ps2hq.com/indar/{z}/t_indar_{y}_{x}.jpg', {
+		L.Map.prototype.initialize.call(this, container);
+		this.on('click', function(ev) {
+			console.log(ev.latlng.toString());
+		});
+		this.setView([0, 0], 3);
+
+		var l = new ps2hq.map.TileLayer('indar');
+		l.addTo(this);
+		var canvasTiles = L.tileLayer.canvas();
+		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
+			var ctx = canvas.getContext('2d');
+			ctx.strokeStyle = ctx.fillStyle = "red";
+			ctx.rect(0,0, 256,256);
+			ctx.stroke();
+			ctx.fillText('(' + tilePoint.x + ', ' + tilePoint.y + ')',5,10);
+		};
+		//canvasTiles.addTo(this.map);
+
+		if(options.sectors) {
+			this.addLayer(new ps2hq.map.SectorLayer());
+		}
+	}
+});
+
+ps2hq.map.MapContinent = {
+	INDAR: 'indar',
+	ESAMIR: 'esamir',
+	AMERISH: 'amerish'
+};
+
+ps2hq.map.TileLayer = L.TileLayer.extend({
+	options: {
 		minZoom: 0,
 		maxZoom: 5,
 		zoomReverse: true,
 		continuousWorld: true
-	});
+	},
+	url: 'http://map-images.ps2hq.com/{continent}/{z}/t_{continent}_{y}_{x}.jpg',
 
-	l.getTileUrl = function(pt) {
+	initialize: function(continent) {
+		if(!continent) {
+			throw new Error('Must specify continent');
+		}
+
+		this._continent = continent;
+	},
+
+	getTileUrl: function(pt) {
 		this._adjustTilePoint(pt);
 
 		var z = this._getZoomForUrl();
-		var url = this._url;
+		var url = this._url || this.url;
 
 		if(z == 0) {
-			url = 'http://map-images.ps2hq.com/indar/t_indar_{y}_{x}.jpg';
+			url = 'http://map-images.ps2hq.com/{continent}/t_{continent}_{y}_{x}.jpg';
 		}
 
 		var scale = 2 << (4 - z);
@@ -70,56 +99,69 @@ ps2hq.Map = function(container) {
 
 		return L.Util.template(url, L.Util.extend({
 			s: this._getSubdomain(pt),
-			   z: this._getZoomForUrl(),
-			   x: x,
-			   y: y
+			z: this._getZoomForUrl(),
+			x: x,
+			y: y,
+			continent: this._continent
 		}));
-	};
-	
-	l.addTo(this.map);
-	var canvasTiles = L.tileLayer.canvas();
-	canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
-		var ctx = canvas.getContext('2d');
-		ctx.strokeStyle = ctx.fillStyle = "red";
-		ctx.rect(0,0, 256,256);
-		ctx.stroke();
-		ctx.fillText('(' + tilePoint.x + ', ' + tilePoint.y + ')',5,10);
-	};
-	//canvasTiles.addTo(this.map);
-	function flatten(hexgroup) {
-		var result = [];
-		for(var i = 0; i < hexgroup.length; i++) {
-			var hex = hexgroup[i];
-			for(var j = 0; j < hex.length; j++) {
-				result.push(hex[j]);
+	}
+});
+
+ps2hq.map.SectorLayer = L.Class.extend({
+	polyOptions: {
+		fillColor: 'red',
+		fillOpacity: 0.2,
+		color: 'black'
+	},
+
+	initialize: function(offset, options) {
+		this.offset = offset;
+		this.polyOptions = L.Util.extend(this.polyOptions, options);
+	},
+
+	onAdd: function(map) {
+		function flatten(hexgroup) {
+			var result = [];
+			for(var i = 0; i < hexgroup.length; i++) {
+				var hex = hexgroup[i];
+				for(var j = 0; j < hex.length; j++) {
+					result.push(hex[j]);
+				}
 			}
+
+			return result;
 		}
 
-		return result;
-	}
+		var hexes = [];
+		for(var i = 0; i < sectors.length; i++) {
+			try {
+			var pg = this._hexGroup(sectors[i].hexes);
+			var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
+			var p = new L.Polygon(lats, this.polyOptions);
+			p.on('click', function(ev) {
+				console.log(ev.latlng.toString());
+			});
+			hexes.push(p);
+			} catch(ex) { console.log(ex); } 
+		}
 
-	for(var i = 0; i < sectors.length; i++) {
-		try {
-		var pg = this.hexGroup(sectors[i].hexes);
-		console.log(pg);
-		//console.dir(_.flatten(pg, true));
-		var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
-		//console.dir(lats);
-		//var p = new R.Polygon(lats);
-		var p = new L.Polygon(lats, {
-			fill: true,
-			fillColor: 'red'
-		});
-		p.on('click', function(ev) {
-			console.log(ev.latlng.toString());
-		});
-		this.map.addLayer(p);
-		} catch(ex) { console.log(ex); } 
-	}
-};
+		this.lg = new L.LayerGroup(hexes);
+		map.addLayer(this.lg);
+	},
 
-ps2hq.Map.prototype = {
-	hexGroup: function(points) {
+	onRemove: function(map) {
+		if(this.lg) {
+			map.removeLayer(this.lg);
+		}
+
+		this.lg = null;
+	},
+
+	_reset: function() {
+
+	},
+
+	_hexGroup: function(points) {
 		function setNeighbors(pt, points) {
 			//determine which hexes are adjacent to this one
 			var topLeft = {
@@ -271,13 +313,13 @@ ps2hq.Map.prototype = {
 			var hexx = ((pt.x * hexWidth) + xOffset + hexRowOffset);
 			var hexy = ((pt.y * (hexRadius * 1.5)) + yOffset);
 
-			points.push(this.hexPart(hexx, hexy, hexRadius, pt.points, i == 0));
+			points.push(this._hexPart(hexx, hexy, hexRadius, pt.points, i == 0));
 		}
 
 		return points;
 	},
 
-	hexPart: function(xPos, yPos, radius, points, first) {
+	_hexPart: function(xPos, yPos, radius, points, first) {
 		var p = [];
 		for(var i = 0; i < points.length; i++) {
 			var ptIdx = points[i];
@@ -294,4 +336,4 @@ ps2hq.Map.prototype = {
 
 		return p;
 	}
-};
+});

@@ -1,0 +1,12 @@
+.leaflet-container {
+	background: #051010;
+}
+
+.sector-name {
+	text-shadow: rgb(0, 0, 0) 2px 2px 2px;
+	color: white;
+	font-size: 14px;
+	text-align: center;
+	font-weight: bold;
+}
+

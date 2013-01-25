@@ -76,6 +76,8 @@ ps2hq.Map = L.Map.extend({
 			self.setContinent(ev.continent);
 		});
 		layersCtrl.addTo(this);
+
+		this.addLayer(new ps2hq.map.SectorInfoLayer());
 	},
 
 	showSectors: function(show) {
@@ -454,3 +456,67 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		return p;
 	}
 });
+
+ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
+	includes: L.Mixin.Events,
+
+	initialize: function(offset) {
+		this.offset = offset;
+		this._sectors = sectorsIndar;
+	},
+
+	setContinent: function(continent) {
+		this._sectors = ({ indar: sectorsIndar, amerish: sectorsAmerish, esamir: sectorsEsamir })[continent];
+		this.onAdd();
+	},
+
+	onAdd: function(map) {
+		map = map || this._map;
+		this._map = map;
+
+		function flatten(hexgroup) {
+			var result = [];
+			for(var i = 0; i < hexgroup.length; i++) {
+				var hex = hexgroup[i];
+				for(var j = 0; j < hex.length; j++) {
+					result.push(hex[j]);
+				}
+			}
+			return result;
+		}
+
+		var icons = [];
+		var sectors = this._sectors;
+		for(var i = 0; i < sectors.length; i++) {
+			try {
+				var pg = this._hexGroup(sectors[i].hexes);
+				var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
+				var p = new L.Polygon(lats);
+
+				var icon = L.divIcon({ className: 'sector-name', html: sectors[i].name });
+				var marker = L.marker(p.getBounds().getCenter(), { icon: icon });
+				icons.push(marker);
+			} catch(ex) { }
+		}
+
+		if(this.lg) {
+			map.removeLayer(this.lg);
+		}
+
+		this.lg = new L.LayerGroup(icons);
+		map.addLayer(this.lg);
+	},
+
+	onRemove: function(map) {
+		if(this.lg) {
+			map.removeLayer(this.lg);
+		}
+
+		this.lg = null;
+	},
+
+	_reset: function() {
+
+	}
+});
+

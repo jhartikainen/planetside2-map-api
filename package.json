@@ -1,0 +1,10 @@
+{
+	"name": "ps2hq-map",
+	"version": "0.0.1",
+	"author": "jani@jjh.fi",
+	"description": "ps2hq.com map API for displaying Auraxis map",
+	"dependencies": {
+		"uglify-js": "1.x",
+		"sqwish": "*"
+	}
+}

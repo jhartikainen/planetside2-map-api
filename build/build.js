@@ -1,6 +1,8 @@
 var fs = require('fs');
+var sqwish = require('sqwish');
+var uglify = require('uglify-js');
 
-exports.build = function() {
+var buildJs = function() {
 	var files = [
 		'lib/leaflet-0.5-src.js',
 		'src/sectors.js',
@@ -16,5 +18,27 @@ exports.build = function() {
 		return fs.readFileSync(file, 'utf8') + '\n\n';
 	});
 
-	fs.writeFileSync('dist/ps2hq.js', head + contents.join('') + tail);
+	var src = head + contents.join('') + tail;
+	fs.writeFileSync('dist/ps2hq-src.js', src);
+	fs.writeFileSync('dist/ps2hq.js', uglify(src, { warnings: true, fromString: true }));
+};
+
+var buildCss = function() {
+	var files = [
+		'lib/leaflet.css',
+		'src/map-styles.css'
+	];
+
+	var contents = files.map(function(file) {
+		return fs.readFileSync(file, 'utf8') + '\n\n';
+	});
+
+	var src = contents.join('');
+	fs.writeFileSync('dist/ps2hq-src.css', src);
+	fs.writeFileSync('dist/ps2hq.css', sqwish.minify(src));
+};
+
+exports.build = function() {
+	buildJs();
+	buildCss();
 };

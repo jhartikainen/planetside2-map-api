@@ -238,18 +238,6 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		map = map || this._map;
 		this._map = map;
 
-		function flatten(hexgroup) {
-			var result = [];
-			for(var i = 0; i < hexgroup.length; i++) {
-				var hex = hexgroup[i];
-				for(var j = 0; j < hex.length; j++) {
-					result.push(hex[j]);
-				}
-			}
-
-			return result;
-		}
-
 		var hexes = [];
 		var sectors = this._sectors;
 		var self = this;
@@ -427,17 +415,6 @@ ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
 	onAdd: function(map) {
 		map = map || this._map;
 		this._map = map;
-
-		function flatten(hexgroup) {
-			var result = [];
-			for(var i = 0; i < hexgroup.length; i++) {
-				var hex = hexgroup[i];
-				for(var j = 0; j < hex.length; j++) {
-					result.push(hex[j]);
-				}
-			}
-			return result;
-		}
 
 		var icons = [];
 		var smallIcons = [];

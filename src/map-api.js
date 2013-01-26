@@ -26,10 +26,12 @@ ps2hq.Map = L.Map.extend({
 	_currentTilelayer: null,
 	_sectorLayer: null,
 	_sectorsVisible: false,
+	_infoLayer: null,
 
 	initialize: function(container, options) {
 		options = L.Util.extend({
 			sectors: true,
+			sectorLabels: true,
 			continent: ps2hq.map.MapContinent.INDAR
 		}, options);
 
@@ -69,6 +71,9 @@ ps2hq.Map = L.Map.extend({
 		});
 		this.showSectors(options.sectors);
 
+		this._infoLayer = new ps2hq.map.SectorInfoLayer();
+		this.showSectorLabels(options.sectors && options.sectorLabels);
+
 		this.setContinent(options.continent);
 
 		var layersCtrl = new ps2hq.map.LayerControl();
@@ -76,8 +81,6 @@ ps2hq.Map = L.Map.extend({
 			self.setContinent(ev.continent);
 		});
 		layersCtrl.addTo(this);
-
-		this.addLayer(new ps2hq.map.SectorInfoLayer());
 	},
 
 	showSectors: function(show) {
@@ -95,6 +98,15 @@ ps2hq.Map = L.Map.extend({
 		this._sectorsVisible = !!show;
 	},
 
+	showSectorLabels: function(show) {
+		if(show) { 
+			this.addLayer(this._infoLayer); 
+		}
+		else {
+			this.removeLayer(this._infoLayer);
+		}
+	},
+
 	setContinent: function(continent) {
 		if(this._currentTilelayer) {
 			this.removeLayer(this._currentTilelayer);
@@ -105,6 +117,7 @@ ps2hq.Map = L.Map.extend({
 		this._currentTilelayer = this._tilelayers[continent];
 
 		this._sectorLayer.setContinent(continent);
+		this._infoLayer.setContinent(continent);
 	}
 });
 

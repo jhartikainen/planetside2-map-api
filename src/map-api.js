@@ -243,8 +243,8 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		for(var i = 0; i < sectors.length; i++) {
 			(function(sector) {
 				try {
-					var pg = self._hexGroup(sector.hexes);
-					var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
+					var pg = self._generateHexes(sectors[i].hexes);
+					var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
 					var p = new L.Polygon(lats, self.polyOptions);
 					p.on('click', function(ev) {
 						self.fireEvent('sector-click', { sector: sector });
@@ -256,7 +256,7 @@ ps2hq.map.SectorLayer = L.Class.extend({
 						self.fireEvent('sector-out', { sector: sector });
 					});
 					hexes.push(p);
-				} catch(ex) { console.log(ex); } 
+				} catch(ex) { console.dir(ex); } 
 			})(sectors[i]);
 		}
 
@@ -280,165 +280,106 @@ ps2hq.map.SectorLayer = L.Class.extend({
 
 	},
 
-	_hexGroup: function(points) {
-		function setNeighbors(pt, points) {
-			//determine which hexes are adjacent to this one
-			var topLeft = {
-				x: pt.y % 2 == 0 ? pt.x - 1 : pt.x,
-				y: pt.y - 1
-			};
+	_generateHexes: function(sectors) {
+		function floatComp(a, b, epsilon) {
+			return Math.abs(a - b) < epsilon;
+		}
 
-			var topRight = {
-				x: pt.y % 2 == 0 ? pt.x : pt.x + 1,
-				y: pt.y - 1
-			};
+		function dist(a, b) {
+			return Math.sqrt(Math.pow(a[0] - b[0], 2) + Math.pow(a[1] - b[1], 2));
+		}
 
-			var right = {
-				x: pt.x + 1,
-				y: pt.y
-			}
-
-			var left = {
-				x: pt.x - 1,
-				y: pt.y
-			}
-
-			var bottomLeft = {
-				x: pt.y % 2 == 0 ? pt.x - 1 : pt.x,
-				y: pt.y + 1
-			};
-
-			var bottomRight = {
-				x: pt.y % 2 == 0 ? pt.x : pt.x + 1,
-				y: pt.y + 1
-			};
-
-			//neighbor directions from 0 to 5
-			var dirs = [topLeft, topRight, right, bottomRight, bottomLeft, left];
-
-			pt.neighbors = { };
-			pt.points = [];
-			//determine if any hexes are adjacent to this, and direction
-			for(var i = 0; i < points.length; i++) {
-				var otherPoint = points[i];
-				for(var dir = 0; dir < dirs.length; dir++) {
-					if(dirs[dir].x == otherPoint.x && dirs[dir].y == otherPoint.y) {
-						pt.neighbors[dir] = otherPoint;
-					}
+		function findIndexes(list, line) {
+			var indexes = [];
+			for(var i = 0; i < list.length; i++) {
+				if((dist(list[i][0], line[0]) < 0.0001 || dist(list[i][0], line[1]) < 0.0001)
+				  && (dist(list[i][1], line[0]) < 0.0001 || dist(list[i][1], line[1]) < 0.0001)) {
+					indexes.push(i);
 				}
 			}
 
-			return pt;
+			return indexes;
 		}
 
-		//clone objects so we don't smash anything unintentionally
-		var initPts = points;
+		function removeDupes(list, line) {
+			var indexes = findIndexes(list, line);
 
-		var wNeighbors = initPts.map(function(pt) { return setNeighbors(pt, initPts); });
-		//console.dir(wNeighbors);
-
-		var dir = 0, hex;
-
-		var hexesWithPts = [];
-
-		//which points map to which direction
-		var dirPoints = [3, 4, 5, 0, 1, 2];
-
-		var limit = 1000;
-		//iterate edge of hex group until we reach back to first hex
-		while(hex != wNeighbors[0]) {
-			limit--;
-			if(!limit) {
-				throw new Error('Algorithm failed');
+			if(indexes.length > 1) {
+				list.splice(indexes[0], 1);
+				list.splice(indexes[1] - 1, 1);
+				return true;
 			}
 
-			if(!hex) {
-				hex = wNeighbors[0];
-			}
-
-			var next = null;
-
-			//this will cause the same hex to be added into the group multiple times,
-			//but as we are essentially doing step-by-step drawing it's fine.
-			//if we were to add all points to the same object, it would draw the line wrong.
-			hexesWithPts.push({
-				x: hex.x,
-				y: hex.y,
-				points: []
-			});
-
-			//find next hex, clockwise along the edge
-			var dirsTried = 0;
-			while(!next) {
-				if(dirsTried == 6) {
-					throw new Error('Found no neighbors?');
-				}
-
-				next = hex.neighbors[dir];
-
-				//add points along the outer edge for dirs traversed
-				hexesWithPts[hexesWithPts.length - 1].points.push(dirPoints[dir]);
-
-				dir++;
-				dirsTried++;
-				if(dir > 5) {
-					dir = 0;
-				}
-			}
-
-			//go back two to get to a dir one before the one tried last
-			//so any hexes on the sides of the next one get picked correctly
-			dir -= 2;
-			if(dir < 0) {
-				dir = 6 - Math.abs(dir);
-			}
-
-			hex = next;
+			return false;
 		}
 
-		//add finishing points to first hex of group
-		if(dir == 0) {
-			//if last hex was down and left, don't draw bottom point
-			hexesWithPts.push({
-				x: wNeighbors[0].x,
-				y: wNeighbors[0].y,
-				points: [2, 3]
-			});
-		}
-		else {
-			//otherwise bottom point must be included
-			hexesWithPts.push({
-				x: wNeighbors[0].x,
-				y: wNeighbors[0].y,
-				points: [1, 2, 3]
-			});
-		}
-
-
-		var path = '';
+		//generate line segments for each hex border
 		var xOffset = 0.731;
 		var yOffset = 0.98;
-		//var hexWidth = 0.26;
 		var hexWidth = 0.327;
-		//var hexHeight = 0.24;
-		//var hexRadius = 0.15;
 		var hexRadius = hexWidth / Math.sqrt(3);
 		var hexHeight = hexRadius * 2;
 
-		var points = [];
-		for(var i = 0; i < hexesWithPts.length; i++) {
-			var pt = hexesWithPts[i];
+		var lines = [];
+		for(var i = 0; i < sectors.length; i++) {
+			var pt = sectors[i];
 			var hexRowOffset = (pt.y % 2 != 0) ? hexWidth / 2 : 0;
 			var hexx = ((pt.x * hexWidth) + xOffset + hexRowOffset);
 			var hexy = ((pt.y * (hexRadius * 1.5)) + yOffset);
 
-			points.push(this._hexPart(hexx, hexy, hexRadius, pt.points, i == 0));
+			var hexPoints = this._hexPart(hexx, hexy, hexRadius, [0,1,2,3,4,5]);
+			var line = [];
+			for(var j = 0; j < hexPoints.length; j++) {
+				line.push(hexPoints[j]);
+				if(line.length == 2) {
+					lines.push(line);
+					//next line starts from the end of the previous line
+					line = [line[1]];
+				}
+			}
+
+			//add finishing line between end of last line and start of first line of this hex
+			lines.push([lines[lines.length - 1][1], lines[lines.length - 5][0]]);
 		}
 
-		return points;
+		//to get only the outer lines, remove all lines which appear more than once
+		for(i = 0; i < lines.length; i++) {
+			if(removeDupes(lines, lines[i])) {
+				i--;
+			}
+		}
+
+		//sort lines into order where they connect
+		var start = lines.shift();
+		var order = [start];
+		var num = 0;
+		while(lines.length) {
+			var found = false;
+			for(i = 0; i < lines.length; i++) {
+				var pt = lines[i];
+				if(dist(start[1], pt[0]) < 0.000001) {
+					start = lines.splice(i, 1)[0];
+					order.push(start);
+					found = true;
+					break;
+				}
+			}
+
+			if(!found) {
+				throw new Error('Line segment not found');
+			}
+		}
+		
+		//put each line's points into an array so we can then draw a line through them
+		var result = [];
+		for(i = 0; i < order.length; i++) {
+			result.push(order[i][0]);
+		}
+
+		return result;
 	},
 
-	_hexPart: function(xPos, yPos, radius, points, first) {
+	_hexPart: function(xPos, yPos, radius, points) {
 		var p = [];
 		for(var i = 0; i < points.length; i++) {
 			var ptIdx = points[i];
@@ -490,8 +431,8 @@ ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
 		var sectors = this._sectors;
 		for(var i = 0; i < sectors.length; i++) {
 			try {
-				var pg = this._hexGroup(sectors[i].hexes);
-				var lats = flatten(pg).map(function(p) { return new L.LatLng(p[1], p[0]); });
+				var pg = this._generateHexes(sectors[i].hexes);
+				var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
 				var p = new L.Polygon(lats);
 
 				var icon = L.divIcon({ className: 'sector-name', html: sectors[i].name });

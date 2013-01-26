@@ -32,6 +32,7 @@ ps2hq.Map = L.Map.extend({
 		options = L.Util.extend({
 			sectors: true,
 			sectorLabels: true,
+			grid: true,
 			continent: ps2hq.map.MapContinent.INDAR
 		}, options);
 
@@ -40,17 +41,6 @@ ps2hq.Map = L.Map.extend({
 			console.log(ev.latlng.toString());
 		});
 		this.setView([0, 0], 3);
-
-
-		var canvasTiles = L.tileLayer.canvas();
-		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
-			var ctx = canvas.getContext('2d');
-			ctx.strokeStyle = ctx.fillStyle = "red";
-			ctx.rect(0,0, 256,256);
-			ctx.stroke();
-			ctx.fillText('(' + tilePoint.x + ', ' + tilePoint.y + ')',5,10);
-		};
-		//canvasTiles.addTo(this.map);
 
 		this._tilelayers = {
 			indar: new ps2hq.map.TileLayer('indar'),
@@ -81,30 +71,40 @@ ps2hq.Map = L.Map.extend({
 			self.setContinent(ev.continent);
 		});
 		layersCtrl.addTo(this);
+
+		var canvasTiles = L.tileLayer.canvas();
+		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
+			var ctx = canvas.getContext('2d');
+			ctx.strokeStyle = ctx.fillStyle = "red";
+			ctx.rect(0,0, 256,256);
+			ctx.stroke();
+			ctx.fillText('(' + tilePoint.x + ', ' + tilePoint.y + ')',5,10);
+		};
+		//canvasTiles.addTo(this);
+
+		this._gridLayer = new ps2hq.map.GridLayer();
+		this.showGrid(options.grid);
+	},
+
+	_toggleLayer: function(visible, layer) {
+		if(visible) {
+			this.addLayer(layer);
+		}
+		else {
+			this.removeLayer(layer);
+		}
+	},
+
+	showGrid: function(show) {
+		this._toggleLayer(show, this._gridLayer);
 	},
 
 	showSectors: function(show) {
-		if(show) {
-			if(!this._sectorsVisible) {
-				this.addLayer(this._sectorLayer);
-			}
-		}
-		else {
-			if(this._sectorsVisible) {
-				this.removeLayer(this._sectorLayer);
-			}
-		}
-
-		this._sectorsVisible = !!show;
+		this._toggleLayer(show, this._sectorLayer);
 	},
 
 	showSectorLabels: function(show) {
-		if(show) { 
-			this.addLayer(this._infoLayer); 
-		}
-		else {
-			this.removeLayer(this._infoLayer);
-		}
+		this._toggleLayer(show, this._infoLayer);
 	},
 
 	setContinent: function(continent) {
@@ -480,6 +480,55 @@ ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
 			this._map.removeLayer(this.lg);
 		}
 
+	},
+
+	_reset: function() {
+
+	}
+});
+
+ps2hq.map.GridLayer = L.Class.extend({
+	includes: L.Mixin.Events,
+
+	_fg: null,
+	_lineStyles: null,
+
+	initialize: function(lineStyles) {
+		this._lineStyles = lineStyles || {};
+	},
+
+	setContinent: function(continent) {
+	},
+
+	onAdd: function(map) {
+		if(this._fg) {
+			this._map.removeLayer(this._fg);
+		}
+
+		this._map = map;
+
+		var latlngs = [];
+		for(var i = 0; i <= 8; i++) {
+			latlngs.push([new L.LatLng(i, 0), new L.LatLng(i, 8)]);
+			latlngs.push([new L.LatLng(0, i), new L.LatLng(8, i)]);
+		}
+
+		this._fg = new L.MultiPolyline(latlngs, L.Util.extend({
+			color: 'white',
+			opacity: 0.5,
+			weight: 2
+		}, this._lineStyles));
+
+		this._map.addLayer(this._fg);
+	},
+
+	onRemove: function(map) {
+		if(this._fg) {
+			this._map.removeLayer(this._fg);
+		}
+
+		this._fg = null;
+		this._map = null;
 	},
 
 	_reset: function() {

@@ -2,6 +2,17 @@
 	background: #051010;
 }
 
+.leaflet-control.layer-control {
+	background: white;
+	border-radius: 5px;
+	padding: 5px;
+}
+
+.leaflet-control.layer-control label,
+.leaflet-control.layer-control input {
+	cursor: pointer;
+}
+
 .sector-name {
 	text-shadow: rgb(0, 0, 0) 2px 2px 2px;
 	color: white;

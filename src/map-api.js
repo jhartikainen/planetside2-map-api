@@ -531,7 +531,8 @@ ps2hq.map.GridLayer = L.Class.extend({
 		this._fg = new L.MultiPolyline(latlngs, L.Util.extend({
 			color: 'white',
 			opacity: 0.5,
-			weight: 2
+			weight: 2,
+			clickable: false
 		}, this._lineStyles));
 
 		this._map.addLayer(this._fg);

@@ -16,6 +16,7 @@ Available options are:
 
 - `sectors`: boolean, display sectors true/false
 - `sectorLabels`: boolean, display sector labels true/false
+- `grid`: boolean, display grid true/false
 
 For example:
 
@@ -25,4 +26,5 @@ For example:
 
     map.showSectors(false);
     map.showSectorLabels(false);
+    map.showGrid(false);
 

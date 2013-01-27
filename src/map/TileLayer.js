@@ -6,14 +6,15 @@ ps2hq.map.TileLayer = L.TileLayer.extend({
 		zoomReverse: true,
 		continuousWorld: true
 	},
-	_url: 'http://www.weendy.dk/maps/indar/{z}/indar_tile_{x}_{y}.jpg',
+	_url: 'http://www.weendy.dk/maps/{continent}/{z}/{continent}_tile_{x}_{y}.jpg',
 
 	initialize: function(continent) {
 		if(!continent) {
 			throw new Error('Must specify continent');
 		}
 
-		this._continent = continent;
+		//use util.extend to clone options since otherwise it's shared between instances
+		this.options = L.Util.extend({ continent: continent }, this.options);
 	}
 });
 

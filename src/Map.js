@@ -13,11 +13,11 @@ ps2hq.Map = L.Map.extend({
 		crs: L.Util.extend({}, L.CRS, {
 			code: 'asf',
 			projection: L.Projection.LonLat,
-			transformation: new L.Transformation(1, 0, 1, 0),
+			transformation: new L.Transformation(1, -4, 1, -4),
 			scale: function(zoom) {
-				//0.03125 = number of units per tile = 256 / 8192
-				//256 = tile size, 8192 = total map size
-				return 1 / (0.03125 / Math.pow(2, zoom));
+				//calculate number of units per tile for scaler = tile width / total map width
+				//256 = tile size, 32768 = total map size
+				return 1 / ((256 / 32768) / Math.pow(2, zoom));
 			}		
 		})
 	},

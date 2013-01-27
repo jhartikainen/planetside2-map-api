@@ -1,7 +1,8 @@
 ps2hq.map.TileLayer = L.TileLayer.extend({
 	options: {
 		minZoom: -2,
-		maxZoom: 3,
+		maxZoom: 5,
+		zoomOffset: -2,
 		zoomReverse: true,
 		continuousWorld: true
 	},

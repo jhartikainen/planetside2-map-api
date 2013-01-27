@@ -8,7 +8,12 @@ var buildJs = function() {
 		'src/sectors.js',
 		'src/sectors-amerish.js',
 		'src/sectors-esamir.js',
-		'src/map-api.js'
+		'src/Map.js',
+		'src/map/TileLayer.js',
+		'src/map/SectorLayer.js',
+		'src/map/SectorInfoLayer.js',
+		'src/map/LayerControl.js',
+		'src/map/GridLayer.js',
 	];
 
 	var head = '(function(window, document, undefined) {';

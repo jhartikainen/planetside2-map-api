@@ -8,6 +8,8 @@ if(!ps2hq.map) {
 
 ps2hq.Map = L.Map.extend({
 	options: {
+		zoom: 0,
+		center: new L.LatLng(4, 4),
 		continuousWorld: true,
 		worldCopyJump: false,
 		crs: L.Util.extend({}, L.CRS, {
@@ -36,11 +38,10 @@ ps2hq.Map = L.Map.extend({
 			continent: 'indar'
 		}, options);
 
-		L.Map.prototype.initialize.call(this, container);
+		L.Map.prototype.initialize.call(this, container, this.options);
 		this.on('click', function(ev) {
 			console.log(ev.latlng.toString());
 		});
-		this.setView([0, 0], 3);
 
 		this._tilelayers = {
 			indar: new ps2hq.map.TileLayer('indar'),

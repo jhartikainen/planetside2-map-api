@@ -19,20 +19,18 @@ ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
 		var smallIcons = [];
 		var sectors = this._sectors;
 		for(var i = 0; i < sectors.length; i++) {
-			try {
-				var pg = this._generateHexes(sectors[i].hexes);
-				var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
-				var p = new L.Polygon(lats);
+			var pg = this._generateHexes(sectors[i].hexes);
+			var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
+			var p = new L.Polygon(lats);
 
-				var icon = L.divIcon({ className: 'sector-name', html: sectors[i].name });
-				var marker = L.marker(p.getBounds().getCenter(), { icon: icon, clickable: false });
-				if(sectors[i].hexes.length < 4) {
-					smallIcons.push(marker);
-				}
-				else {
-					icons.push(marker);
-				}
-			} catch(ex) { }
+			var icon = L.divIcon({ className: 'sector-name', html: sectors[i].name });
+			var marker = L.marker(p.getBounds().getCenter(), { icon: icon, clickable: false });
+			if(sectors[i].hexes.length < 4) {
+				smallIcons.push(marker);
+			}
+			else {
+				icons.push(marker);
+			}
 		}
 
 		if(this.lg) {
@@ -65,14 +63,14 @@ ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
 		}
 
 		var z = this._map.getZoom();
-		if(z > 2) {
+		if(z > 0) {
 			this._map.addLayer(this.smallLg);
 		}
 		else {
 			this._map.removeLayer(this.smallLg);
 		}
 
-		if(z > 1) {
+		if(z > 0) {
 			this._map.addLayer(this.lg);
 		}
 		else {

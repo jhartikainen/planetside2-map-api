@@ -27,21 +27,19 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		var self = this;
 		for(var i = 0; i < sectors.length; i++) {
 			(function(sector) {
-				try {
-					var pg = self._generateHexes(sectors[i].hexes);
-					var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
-					var p = new L.Polygon(lats, self.polyOptions);
-					p.on('click', function(ev) {
-						self.fireEvent('sector-click', { sector: sector });
-					});
-					p.on('mouseover', function(ev) {
-						self.fireEvent('sector-over', { sector: sector });
-					});
-					p.on('mouseout', function(ev) {
-						self.fireEvent('sector-out', { sector: sector });
-					});
-					hexes.push(p);
-				} catch(ex) { console.dir(ex); } 
+				var pg = self._generateHexes(sectors[i].hexes);
+				var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
+				var p = new L.Polygon(lats, self.polyOptions);
+				p.on('click', function(ev) {
+					self.fireEvent('sector-click', { sector: sector });
+				});
+				p.on('mouseover', function(ev) {
+					self.fireEvent('sector-over', { sector: sector });
+				});
+				p.on('mouseout', function(ev) {
+					self.fireEvent('sector-out', { sector: sector });
+				});
+				hexes.push(p);
 			})(sectors[i]);
 		}
 

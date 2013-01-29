@@ -75,6 +75,8 @@ ps2hq.Map = L.Map.extend({
 		var layerControl = new ps2hq.map.LayerControl();
 		layerControl.addTo(this);
 
+		this.attributionControl.setPrefix('Powered by <a href="http://ps2hq.com/apis/map">ps2hq map API</a>');
+
 		var canvasTiles = L.tileLayer.canvas();
 		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
 			var ctx = canvas.getContext('2d');

@@ -2,25 +2,25 @@
 	background: #051010;
 }
 
-.leaflet-control.layer-control {
+.leaflet-control.ps2hq-control {
 	background: white;
 	border-radius: 5px;
 	padding: 5px;
 }
 
-.leaflet-control.layer-control label,
-.leaflet-control.layer-control input {
+.leaflet-control.ps2hq-control label,
+.leaflet-control.ps2hq-control input {
 	cursor: pointer;
 }
 
 /* need to add these for resetting styling if containing page's other CSS rules mess with it */
-.leaflet-control.layer-control input {
+.leaflet-control.ps2hq-control input {
 	width: 20px;
 	display: inline-block;
 	margin: 0 3px;
 	height: 13px;
 }
-.leaflet-control.layer-control label {
+.leaflet-control.ps2hq-control label {
 	display: inline;
 }
 

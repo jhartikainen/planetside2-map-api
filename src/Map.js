@@ -67,11 +67,11 @@ ps2hq.Map = L.Map.extend({
 
 		this.setContinent(options.continent);
 
-		var layersCtrl = new ps2hq.map.LayerControl();
-		layersCtrl.on('changecontinent', function(ev) {
+		var continentControl = new ps2hq.map.ContinentControl();
+		continentControl.on('changecontinent', function(ev) {
 			self.setContinent(ev.continent);
 		});
-		layersCtrl.addTo(this);
+		continentControl.addTo(this);
 
 		var canvasTiles = L.tileLayer.canvas();
 		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {

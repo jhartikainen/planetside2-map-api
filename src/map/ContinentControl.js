@@ -1,4 +1,4 @@
-ps2hq.map.LayerControl = L.Control.extend({
+ps2hq.map.ContinentControl = L.Control.extend({
 	options: {
 		position: 'topright'
 	},
@@ -6,7 +6,7 @@ ps2hq.map.LayerControl = L.Control.extend({
 	includes: L.Mixin.Events,
 
 	onAdd: function(map) {
-		var container = L.DomUtil.create('div', 'layer-control');
+		var container = L.DomUtil.create('div', 'ps2hq-control continent-control');
 
 		var self = this;
 		['indar', 'esamir', 'amerish'].forEach(function(cont) {

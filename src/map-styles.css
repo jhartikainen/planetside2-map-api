@@ -13,6 +13,17 @@
 	cursor: pointer;
 }
 
+/* need to add these for resetting styling if containing page's other CSS rules mess with it */
+.leaflet-control.layer-control input {
+	width: 20px;
+	display: inline-block;
+	margin: 0 3px;
+	height: 13px;
+}
+.leaflet-control.layer-control label {
+	display: inline;
+}
+
 .sector-name {
 	text-shadow: rgb(0, 0, 0) 2px 2px 2px;
 	color: white;

@@ -55,16 +55,20 @@ For example:
 The map emits some events on user interaction.
 
     //mouse over a sector
-    map.on('sector-over', function(sector) {
-        //sector has sector info on it.
+    map.on('sector-over', function(ev) {
+        ev.target.setStyle({ fillColor: 'white' });
     });
 
     //mouse out of sector
-    map.on('sector-out', function(sector) {
-        //sector has sector info on it.
+    map.on('sector-out', function(ev) {
+        ev.target.setStyle({ fillColor: 'red' });
     });
 
     //sector click event
-    map.on('sector-click', function(sector) {
-        //sector has sector info on it.
+    map.on('sector-click', function(ev) {
+        console.log('Clicked on sector: ' + ev.sector.name);
     });
+
+The event parameter `ev` contains a Leaflet event object, with one additional property: `sector`. As with any Leaflet event, the `target` contains the polygon the user clicked. As in the example above, you can change the style for the polygon easily. The `sector` property contains information on the sector, including the name and hex information.
+
+

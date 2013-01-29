@@ -31,13 +31,16 @@ ps2hq.map.SectorLayer = L.Class.extend({
 				var lats = pg.map(function(p) { return new L.LatLng(p[1], p[0]); });
 				var p = new L.Polygon(lats, self.polyOptions);
 				p.on('click', function(ev) {
-					self.fireEvent('sector-click', { sector: sector });
+					ev.sector = sector;
+					self.fireEvent('sector-click', ev);
 				});
 				p.on('mouseover', function(ev) {
-					self.fireEvent('sector-over', { sector: sector });
+					ev.sector = sector;
+					self.fireEvent('sector-over', ev);
 				});
 				p.on('mouseout', function(ev) {
-					self.fireEvent('sector-out', { sector: sector });
+					ev.sector = sector;
+					self.fireEvent('sector-out', ev);
 				});
 				hexes.push(p);
 			})(sectors[i]);

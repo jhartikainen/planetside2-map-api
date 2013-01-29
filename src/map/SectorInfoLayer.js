@@ -53,7 +53,12 @@ ps2hq.map.SectorInfoLayer = ps2hq.map.SectorLayer.extend({
 			map.removeLayer(this.lg);
 		}
 
+		if(this.smallLg) {
+			map.removeLayer(this.smallLg);
+		}
+
 		this.lg = null;
+		this.smallLg = null;
 		map.off('viewreset', this._updateIcons, this);
 	},
 

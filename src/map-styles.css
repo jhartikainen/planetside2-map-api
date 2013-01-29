@@ -24,6 +24,10 @@
 	display: inline;
 }
 
+.ps2hq-control.layer-control label {
+	display: block;
+}
+
 .sector-name {
 	text-shadow: rgb(0, 0, 0) 2px 2px 2px;
 	color: white;

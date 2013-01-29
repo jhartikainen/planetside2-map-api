@@ -13,6 +13,7 @@ var buildJs = function() {
 		'src/map/SectorLayer.js',
 		'src/map/SectorInfoLayer.js',
 		'src/map/ContinentControl.js',
+		'src/map/LayerControl.js',
 		'src/map/GridLayer.js',
 	];
 

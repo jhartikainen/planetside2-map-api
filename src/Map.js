@@ -8,6 +8,10 @@ if(!ps2hq.map) {
 
 ps2hq.Map = L.Map.extend({
 	options: {
+		sectors: true,
+		sectorLabels: true,
+		grid: true,
+		continent: 'indar',
 		zoom: 0,
 		center: new L.LatLng(4, 4),
 		continuousWorld: true,
@@ -31,12 +35,7 @@ ps2hq.Map = L.Map.extend({
 	_infoLayer: null,
 
 	initialize: function(container, options) {
-		options = L.Util.extend({
-			sectors: true,
-			sectorLabels: true,
-			grid: true,
-			continent: 'indar'
-		}, options);
+		this.options = L.Util.extend(this.options, options);
 
 		L.Map.prototype.initialize.call(this, container, this.options);
 		this.on('click', function(ev) {
@@ -60,18 +59,21 @@ ps2hq.Map = L.Map.extend({
 		this._sectorLayer.on('sector-out', function(ev) {
 			self.fireEvent('sector-out', ev);
 		});
-		this.showSectors(options.sectors);
+		this.showSectors(this.options.sectors);
 
 		this._infoLayer = new ps2hq.map.SectorInfoLayer();
-		this.showSectorLabels(options.sectors && options.sectorLabels);
+		this.showSectorLabels(this.options.sectors && this.options.sectorLabels);
 
-		this.setContinent(options.continent);
+		this.setContinent(this.options.continent);
 
 		var continentControl = new ps2hq.map.ContinentControl();
 		continentControl.on('changecontinent', function(ev) {
 			self.setContinent(ev.continent);
 		});
 		continentControl.addTo(this);
+
+		var layerControl = new ps2hq.map.LayerControl();
+		layerControl.addTo(this);
 
 		var canvasTiles = L.tileLayer.canvas();
 		canvasTiles.drawTile = function(canvas, tilePoint, zoom) {
@@ -84,7 +86,7 @@ ps2hq.Map = L.Map.extend({
 		//canvasTiles.addTo(this);
 
 		this._gridLayer = new ps2hq.map.GridLayer();
-		this.showGrid(options.grid);
+		this.showGrid(this.options.grid);
 	},
 
 	_toggleLayer: function(visible, layer) {

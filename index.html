@@ -13,11 +13,13 @@
 		<script src="src/map/LayerControl.js"></script>
 		<script src="src/map/GridLayer.js"></script>
 		<link rel="stylesheet" href="lib/leaflet.css" type="text/css">
+		<link rel="stylesheet" href="lib/font-awesome.css" type="text/css">
+		<link rel="stylesheet" href="src/general-styles.css" type="text/css">
 		<link rel="stylesheet" href="src/map-styles.css" type="text/css">
 	</head>
 
 	<body>
-		<div id="map" style="height: 600px"></div>
+		<div id="map" style="height: 100%"></div>
 		<script>
 			map = new ps2hq.Map('map');
 			map.on('sector-over', function(ev) {

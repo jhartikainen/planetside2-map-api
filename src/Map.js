@@ -71,6 +71,12 @@ ps2hq.Map = L.Map.extend({
 			self.setContinent(ev.continent);
 		});
 		continentControl.addTo(this);
+		
+		var toolbarControl = new ps2hq.map.ToolbarControl();
+		toolbarControl.on('changetool', function(ev) {
+			
+		});
+		toolbarControl.addTo(this);
 
 		var layerControl = new ps2hq.map.LayerControl();
 		layerControl.addTo(this);

@@ -25,7 +25,8 @@ ps2hq.Map = L.Map.extend({
 				//256 = tile size, 32768 = total map size
 				return 1 / ((256 / 32768) / Math.pow(2, zoom));
 			}		
-		})
+		}),
+		toolbar: false
 	},
 
 	_tilelayers: { },
@@ -33,6 +34,7 @@ ps2hq.Map = L.Map.extend({
 	_sectorLayer: null,
 	_sectorsVisible: false,
 	_infoLayer: null,
+	_toolbarControl: null,
 
 	initialize: function(container, options) {
 		this.options = L.Util.extend(this.options, options);
@@ -72,12 +74,6 @@ ps2hq.Map = L.Map.extend({
 		});
 		continentControl.addTo(this);
 		
-		var toolbarControl = new ps2hq.map.ToolbarControl();
-		toolbarControl.on('changetool', function(ev) {
-			
-		});
-		toolbarControl.addTo(this);
-
 		var layerControl = new ps2hq.map.LayerControl();
 		layerControl.addTo(this);
 
@@ -95,6 +91,11 @@ ps2hq.Map = L.Map.extend({
 
 		this._gridLayer = new ps2hq.map.GridLayer();
 		this.showGrid(this.options.grid);
+		
+		this._toolbarControl = new ps2hq.map.ToolbarControl();
+		if(this.options.toolbar) {
+			this.addControl(this._toolbarControl);
+		}
 	},
 
 	_toggleLayer: function(visible, layer) {
@@ -108,6 +109,16 @@ ps2hq.Map = L.Map.extend({
 
 	showGrid: function(show) {
 		this._toggleLayer(show, this._gridLayer);
+	},
+	
+	showToolbar: function(show) {
+		if(show == true && this.options.toolbar == false) {
+			this.options.toolbar = true;
+			this.addControl(this._toolbarControl);
+		} else if(show == false && this.options.toolbar == true) {
+			this.options.toolbar = false;
+			this.removeControl(this._toolbarControl);
+		}
 	},
 
 	showSectors: function(show) {

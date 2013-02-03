@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%; margin: 0; padding: 0;">
 	<head>
 		<script src="lib/leaflet-0.5-src.js"></script>
 		<script src="src/sectors-indar.js"></script>
@@ -19,7 +19,7 @@
 		<link rel="stylesheet" href="src/map-styles.css" type="text/css">
 	</head>
 
-	<body>
+	<body style="height: 100%; margin: 0; padding: 0;">
 		<div id="map" style="height: 100%"></div>
 		<script>
 			map = new ps2hq.Map('map');
@@ -34,6 +34,8 @@
 				ev.target.setStyle({ fillColor: 'red' });
 				console.dir(ev);
 			});
+			
+			map.showToolbar(true);
 		</script>
 	</body>
 </html>

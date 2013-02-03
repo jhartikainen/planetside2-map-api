@@ -32,6 +32,10 @@ ps2hq.map.ToolbarControl = L.Control.extend({
 
 		return container;
 	},
+	
+	onRemove: function(map) {
+		this._removeListeners();
+	},
 
 	_changeTool: function(tool,map) {
 		this.options.selected = tool;
@@ -57,6 +61,10 @@ ps2hq.map.ToolbarControl = L.Control.extend({
 	
 	_toolMouseUp: function(mev) {
 		
+	},
+	
+	_removeListeners: function() {
+		map.removeEventListener('mousedown', this._toolMouseDown, this);
 	}
 });
 

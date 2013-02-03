@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html>
+<html style="height: 100%; margin: 0; padding: 0;">
 	<head>
 		<script src="lib/leaflet-0.5-src.js"></script>
-		<script src="src/sectors.js"></script>
+		<script src="src/sectors-indar.js"></script>
 		<script src="src/sectors-amerish.js"></script>
 		<script src="src/sectors-esamir.js"></script>
 		<script src="src/Map.js"></script>
@@ -11,13 +11,14 @@
 		<script src="src/map/SectorInfoLayer.js"></script>
 		<script src="src/map/ContinentControl.js"></script>
 		<script src="src/map/LayerControl.js"></script>
+		<script src="src/map/ToolbarControl.js"></script>
 		<script src="src/map/GridLayer.js"></script>
 		<link rel="stylesheet" href="lib/leaflet.css" type="text/css">
 		<link rel="stylesheet" href="src/map-styles.css" type="text/css">
 	</head>
 
-	<body>
-		<div id="map" style="height: 600px"></div>
+	<body style="height: 100%; margin: 0; padding: 0;">
+		<div id="map" style="height: 100%"></div>
 		<script>
 			map = new ps2hq.Map('map');
 			map.on('sector-over', function(ev) {
@@ -31,6 +32,7 @@
 				ev.target.setStyle({ fillColor: 'red' });
 				console.dir(ev);
 			});
+			
 		</script>
 	</body>
 </html>

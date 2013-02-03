@@ -1,5 +1,7 @@
 .leaflet-container {
 	background: #051010;
+	font-family: 'Lucida Sans Unicode','Lucida Grande',sans-serif;
+	font-size: 12px;
 }
 
 .leaflet-control.ps2hq-control {
@@ -31,7 +33,7 @@
 .sector-name {
 	text-shadow: rgb(0, 0, 0) 2px 2px 2px;
 	color: white;
-	font-size: 14px;
+	font-size: 12px;
 	text-align: center;
 	font-weight: bold;
 }

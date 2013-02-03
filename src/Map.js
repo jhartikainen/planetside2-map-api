@@ -12,14 +12,14 @@ ps2hq.Map = L.Map.extend({
 		sectorLabels: true,
 		grid: true,
 		continent: 'indar',
-		zoom: 0,
+		zoom: 1,
 		center: new L.LatLng(4, 4),
 		continuousWorld: true,
 		worldCopyJump: false,
 		crs: L.Util.extend({}, L.CRS, {
 			code: 'asf',
 			projection: L.Projection.LonLat,
-			transformation: new L.Transformation(1, -4, 1, -4),
+			transformation: new L.Transformation(0.5, -2, 0.5, -2),
 			scale: function(zoom) {
 				//calculate number of units per tile for scaler = tile width / total map width
 				//256 = tile size, 32768 = total map size

@@ -1,7 +1,7 @@
 ps2hq.map.TileLayer = L.TileLayer.extend({
 	options: {
-		minZoom: -2,
-		maxZoom: 5,
+		minZoom: 0,
+		maxZoom: 6,
 		zoomOffset: -2,
 		zoomReverse: true,
 		continuousWorld: true
@@ -19,7 +19,7 @@ ps2hq.map.TileLayer = L.TileLayer.extend({
 
 	_tileShouldBeLoaded: function(tile) {
 		//get the number of tiles per zoom
-		var numTiles = 4 << this._map.getZoom();
+		var numTiles = 2 << this._map.getZoom();
 
 		//tile nums are split between negatives and positives so need min/max like this
 		var max = numTiles / 2;

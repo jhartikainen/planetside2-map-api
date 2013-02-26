@@ -15,6 +15,8 @@ var buildJs = function() {
 		'src/map/ContinentControl.js',
 		'src/map/LayerControl.js',
 		'src/map/GridLayer.js',
+		'src/data/SectorControl.js',
+		'src/data/sector-id-map.js'
 	];
 
 	var head = '(function(window, document, undefined) {';

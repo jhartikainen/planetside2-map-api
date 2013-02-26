@@ -123,6 +123,10 @@ ps2hq.Map = L.Map.extend({
 
 		this._sectorLayer.setContinent(continent);
 		this._infoLayer.setContinent(continent);
+	},
+
+	getSectorByName: function(name) {
+		return this._sectorLayer.getSectorByName(name);
 	}
 });
 

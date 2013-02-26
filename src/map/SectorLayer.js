@@ -42,6 +42,7 @@ ps2hq.map.SectorLayer = L.Class.extend({
 					ev.sector = sector;
 					self.fireEvent('sector-out', ev);
 				});
+				sector.poly = p;
 				hexes.push(p);
 			})(sectors[i]);
 		}
@@ -60,6 +61,16 @@ ps2hq.map.SectorLayer = L.Class.extend({
 		}
 
 		this.lg = null;
+	},
+
+	getSectorByName: function(name) {
+		for(var i = 0; i < this._sectors.length; i++) {
+			if(this._sectors[i].name == name) {
+				return this._sectors[i];
+			}
+		}
+
+		return null;
 	},
 
 	_reset: function() {

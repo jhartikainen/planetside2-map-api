@@ -12,6 +12,8 @@
 		<script src="src/map/ContinentControl.js"></script>
 		<script src="src/map/LayerControl.js"></script>
 		<script src="src/map/GridLayer.js"></script>
+		<script src="src/data/SectorControl.js"></script>
+		<script src="src/data/sector-id-map.js"></script>
 		<link rel="stylesheet" href="lib/leaflet.css" type="text/css">
 		<link rel="stylesheet" href="src/map-styles.css" type="text/css">
 	</head>
@@ -22,14 +24,29 @@
 			map = new ps2hq.Map('map');
 			map.on('sector-over', function(ev) {
 				console.dir(ev);
-				ev.target.setStyle({ fillColor: 'white' });
+				//ev.target.setStyle({ fillColor: 'white' });
 			});
 			map.on('sector-click', function(ev) {
 				console.dir(ev);
 			});
 			map.on('sector-out', function(ev) {
-				ev.target.setStyle({ fillColor: 'red' });
+				//ev.target.setStyle({ fillColor: 'red' });
 				console.dir(ev);
+			});
+
+			var factionColors = { TR: 'red', NC: 'blue', VS: 'purple' };
+			sec = new ps2hq.data.SectorControl({ serviceId: 'ps2hq-test' });
+			sec.load(10, 'indar', function(data) {
+				for(var name in data) {
+					var faction = data[name];
+					var sector = map.getSectorByName(name);
+					if(sector) {
+						sector.poly.setStyle({ fillColor: factionColors[faction] });
+					}
+					else {
+						console.log('Missing: ' + name);
+					}
+				}
 			});
 		</script>
 	</body>

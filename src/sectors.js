@@ -1,6 +1,6 @@
 var sectorsIndar = [
 	{
-		name: 'Nanite Pump Depot',
+		name: 'Nanite Pump Station',
 		hexes: [{"x":3,"y":0},{"x":4,"y":0},{"x":5,"y":0}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 	}, {
@@ -16,7 +16,7 @@ var sectorsIndar = [
 		hexes: [{"x":2,"y":1}],
 		buildings: ['weapon_terminal', 'flash_spawn']
 		}, {
-		name: 'Saurva',
+		name: 'Saurva Bio Lab',
 		hexes: [{"x":3,"y":1},{"x":4,"y":1},{"x":3,"y":2},{"x":4,"y":2},{"x":5,"y":2},{"x":3,"y":3},{"x":4,"y":3}],
 		buildings: ['spawn_room' ,'vehicle_spawn', 'weapon_terminal']
 		}, {
@@ -24,7 +24,7 @@ var sectorsIndar = [
 		hexes: [{"x":8,"y":1},{"x":8,"y":2},{"x":7,"y":3},{"x":8,"y":3},{"x":9,"y":2},{"x":9,"y":1},{"x":9,"y":3}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'ammo_tower', 'spawn_room']
 		}, {
-		name: 'TR Warpgate',
+		name: 'Indar NC Warpgate',
 		hexes: [{"x":10,"y":1},{"x":10,"y":2},{"x":10,"y":3},{"x":11,"y":2},{"x":11,"y":1},{"x":12,"y":1},{"x":12,"y":2},{"x":11,"y":3}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower', 'air_pad']
 		}, {
@@ -36,7 +36,7 @@ var sectorsIndar = [
 		hexes: [{"x":14,"y":1},{"x":15,"y":1},{"x":16,"y":1},{"x":14,"y":2},{"x":15,"y":2},{"x":16,"y":2},{"x":17,"y":2},{"x":15,"y":3},{"x":14,"y":3},{"x":13,"y":3},{"x":13,"y":4}],
 		buildings: ['weapon_terminal', 'ammo_tower', 'spawn_room', 'vehicle_spawn']
 		}, {
-		name: 'Nanite Overflow Station',
+		name: 'Nanite Overflow Depot',
 		hexes: [{"x":2,"y":2},{"x":1,"y":3},{"x":2,"y":3},{"x":2,"y":4},{"x":1,"y":4}],
 		buildings: ['ammo_tower']
 		}, {
@@ -60,7 +60,7 @@ var sectorsIndar = [
 		hexes: [{"x":9,"y":4},{"x":10,"y":4},{"x":11,"y":4},{"x":10,"y":5},{"x":9,"y":5}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 		}, {
-		name: 'Mao',
+		name: 'Mao Tech Plant',
 		hexes: [{"x":14,"y":4},{"x":15,"y":4},{"x":13,"y":5},{"x":14,"y":5},{"x":15,"y":5},{"x":14,"y":6},{"x":15,"y":6}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room']
 		}, {
@@ -76,7 +76,7 @@ var sectorsIndar = [
 		hexes: [{"x":4,"y":6},{"x":4,"y":7}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 		}, {
-		name: 'Dahaka',
+		name: 'Dahaka Amp Station',
 		hexes: [{"x":5,"y":5},{"x":6,"y":5},{"x":5,"y":6},{"x":6,"y":6},{"x":7,"y":6},{"x":5,"y":7},{"x":6,"y":7}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room']
 		}, {
@@ -116,7 +116,7 @@ var sectorsIndar = [
 		hexes: [{"x":4,"y":9},{"x":2,"y":10},{"x":3,"y":10},{"x":4,"y":10},{"x":5,"y":10},{"x":1,"y":11},{"x":2,"y":11},{"x":3,"y":11},{"x":4,"y":11},{"x":5,"y":11}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 		}, {
-		name: 'Ceres Hydrophonics',
+		name: 'Ceres Hydroponics',
 		hexes: [{"x":9,"y":9},{"x":10,"y":9},{"x":11,"y":9},{"x":10,"y":10},{"x":11,"y":10}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 		}, {
@@ -136,7 +136,7 @@ var sectorsIndar = [
 		hexes: [{"x":6,"y":9},{"x":6,"y":10},{"x":7,"y":10}],
 		buildings: ['spawn_room', 'flash_spawn', 'weapon_terminal', 'ammo_tower']
 		}, {
-		name: 'Ti Alloys Inc.',
+		name: 'Ti Alloys, Inc.',
 		hexes: [{"x":8,"y":10},{"x":9,"y":10},{"x":8,"y":11},{"x":9,"y":11},{"x":9,"y":12},{"x":10,"y":12}],
 		buildings: ['flash_spawn', 'weapon_terminal']
 		}, {
@@ -144,7 +144,7 @@ var sectorsIndar = [
 		hexes: [{"x":10,"y":11},{"x":11,"y":11},{"x":11,"y":12}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower']
 		}, {
-		name: 'Zurvan',
+		name: 'Zurvan Amp Station',
 		hexes: [{"x":12,"y":11},{"x":13,"y":12},{"x":14,"y":12},{"x":13,"y":13},{"x":12,"y":13}],
 		buildings: ['vehicle_spawn', 'spawn_room', 'weapon_terminal']
 		}, {
@@ -160,7 +160,7 @@ var sectorsIndar = [
 		hexes: [{"x":14,"y":11},{"x":15,"y":11},{"x":15,"y":12}],
 		buildings: ['weapon_terminal']
 		}, {
-		name: 'Rashnu',
+		name: 'Rashnu Bio Lab',
 		hexes: [{"x":16,"y":11},{"x":17,"y":11},{"x":16,"y":12},{"x":17,"y":12},{"x":18,"y":12},{"x":16,"y":13},{"x":17,"y":13}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower']
 		}, {
@@ -168,7 +168,7 @@ var sectorsIndar = [
 		hexes: [{"x":1,"y":12},{"x":0,"y":13},{"x":1,"y":14},{"x":1,"y":15},{"x":2,"y":15}],
 		buildings: ['weapon_terminal']
 		}, {
-		name: 'Hvar',
+		name: 'Hvar Tech Plant',
 		hexes: [{"x":2,"y":12},{"x":3,"y":12},{"x":1,"y":13},{"x":2,"y":13},{"x":3,"y":13},{"x":2,"y":14},{"x":3,"y":14}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room']
 		}, {
@@ -176,7 +176,7 @@ var sectorsIndar = [
 		hexes: [{"x":4,"y":12},{"x":5,"y":12},{"x":4,"y":13},{"x":5,"y":13},{"x":4,"y":14},{"x":5,"y":14}],
 		buildings: ['flash_spawn', 'weapon_terminal', 'spawn_room']
 		}, {
-		name: 'Allatum',
+		name: 'Allatum Bio Lab',
 		hexes: [{"x":6,"y":11},{"x":7,"y":11},{"x":6,"y":12},{"x":7,"y":12},{"x":8,"y":12},{"x":6,"y":13},{"x":7,"y":13}],
 		buildings: ['spawn_room', 'weapon_terminal', 'vehicle_spawn']
 		},{
@@ -216,7 +216,7 @@ var sectorsIndar = [
 		hexes: [{"x":18,"y":13},{"x":16,"y":14},{"x":17,"y":14},{"x":18,"y":14}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 		}, {
-		name: 'VS Warpgate',
+		name: 'Indar TR Warpgate',
 		hexes: [{"x":1,"y":18},{"x":2,"y":18},{"x":3,"y":18},{"x":1,"y":19},{"x":2,"y":19},{"x":3,"y":19},{"x":2,"y":20},{"x":3,"y":20},{"x":4,"y":20}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower', 'air_pad']
 		}, {
@@ -244,7 +244,7 @@ var sectorsIndar = [
 		hexes: [{"x":6,"y":20},{"x":7,"y":20},{"x":6,"y":21},{"x":7,"y":21}],
 		buildings: ['ammo_tower']
 		}, {
-		name: 'Peris',
+		name: 'Peris Amp Station',
 		hexes: [{"x":7,"y":17},{"x":6,"y":18},{"x":7,"y":18},{"x":6,"y":19},{"x":7,"y":19},{"x":6,"y":17},{"x":8,"y":18}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower']
 		}, {
@@ -260,7 +260,7 @@ var sectorsIndar = [
 		hexes: [{"x":11,"y":15},{"x":11,"y":16}],
 		buildings: ['weapon_terminal']
 		}, {
-		name: 'Platinum Mine',
+		name: 'Blackshard Platinum Mine',
 		hexes: [{"x":14,"y":15}],
 		buildings: ['weapon_terminal', 'ammo_tower']
 		}, {
@@ -272,7 +272,7 @@ var sectorsIndar = [
 		hexes: [{"x":17,"y":15},{"x":18,"y":15},{"x":18,"y":16},{"x":19,"y":16},{"x":18,"y":17}, {"x": 19, "y": 17 }],
 		buildings: ['flash_spawn', 'spawn_room', 'weapon_terminal']
 		}, {
-		name: 'Iridium Mine',
+		name: 'Blackshard Iridium Mine',
 		hexes: [{"x":14,"y":16}],
 		buildings: ['weapon_terminal']
 		}, {
@@ -288,7 +288,7 @@ var sectorsIndar = [
 		hexes:[{"x":8,"y":17},{"x":9,"y":17},{"x":10,"y":17},{"x":9,"y":18},{"x":10,"y":18},{"x":11,"y":18}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower']
 		}, {
-		name: 'Tawrich',
+		name: 'Tawrich Tech Plant',
 		hexes: [{"x":12,"y":16},{"x":13,"y":16},{"x":11,"y":17},{"x":12,"y":17},{"x":13,"y":17},{"x":12,"y":18},{"x":13,"y":18}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower']
 		}, {
@@ -308,7 +308,7 @@ var sectorsIndar = [
 		hexes: [{"x":15,"y":18},{"x":16,"y":18},{"x":17,"y":18}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower']
 		}, {
-		name: 'NC Warpgate',
+		name: 'Indar VS Warpgate',
 		hexes: [{"x":18,"y":18},{"x":19,"y":18},{"x":20,"y":18},{"x":17,"y":19},{"x":18,"y":19},{"x":19,"y":19},{"x":17,"y":20},{"x":18,"y":20},{"x":19,"y":20}],
 		buildings: ['weapon_terminal', 'vehicle_spawn', 'air_spawn', 'spawn_room', 'ammo_tower', 'air_pad']
 		}, {

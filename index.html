@@ -34,9 +34,12 @@
 				console.dir(ev);
 			});
 
+			map.on('change-continent', function(ev) {
+				sec.load(10, ev.continent, colorHexes);
+			});
+
 			var factionColors = { TR: 'red', NC: 'blue', VS: 'purple' };
-			sec = new ps2hq.data.SectorControl({ serviceId: 'ps2hq-test' });
-			sec.load(10, 'indar', function(data) {
+			var colorHexes = function(data) {
 				for(var name in data) {
 					var faction = data[name];
 					var sector = map.getSectorByName(name);
@@ -47,7 +50,10 @@
 						console.log('Missing: ' + name);
 					}
 				}
-			});
+			};
+			sec = new ps2hq.data.SectorControl({ serviceId: 'ps2hq-test' });
+			sec.load(10, 'indar', colorHexes);
+
 		</script>
 	</body>
 </html>

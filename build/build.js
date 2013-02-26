@@ -16,8 +16,8 @@ var buildJs = function() {
 		'src/map/LayerControl.js',
 		'src/map/GridLayer.js',
 		'src/data/SectorControl.js',
-		'src/data/sector-id-map.js'
-		'src/map/SectorHelper.js',
+		'src/data/sector-id-map.js',
+		'src/map/SectorHelper.js'
 	];
 
 	var head = '(function(window, document, undefined) {';

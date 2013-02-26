@@ -1,6 +1,5 @@
 ps2hq.map.SectorLayer = L.Class.extend({
 	polyOptions: {
-		fillColor: 'red',
 		fillOpacity: 0.2,
 		color: 'black'
 	},

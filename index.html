@@ -14,6 +14,7 @@
 		<script src="src/map/GridLayer.js"></script>
 		<script src="src/data/SectorControl.js"></script>
 		<script src="src/data/sector-id-map.js"></script>
+		<script src="src/map/SectorHelper.js"></script>
 		<link rel="stylesheet" href="lib/leaflet.css" type="text/css">
 		<link rel="stylesheet" href="src/map-styles.css" type="text/css">
 	</head>
@@ -34,26 +35,12 @@
 				console.dir(ev);
 			});
 
-			map.on('change-continent', function(ev) {
-				sec.load(10, ev.continent, colorHexes);
+			var timer = ps2hq.map.SectorHelper.autoUpdateSectors(map, {
+				worldId: 10,
+				serviceId: 'ps2hq-test',
+				interval: 60
 			});
-
-			var factionColors = { TR: 'red', NC: 'blue', VS: 'purple' };
-			var colorHexes = function(data) {
-				for(var name in data) {
-					var faction = data[name];
-					var sector = map.getSectorByName(name);
-					if(sector) {
-						sector.poly.setStyle({ fillColor: factionColors[faction] });
-					}
-					else {
-						console.log('Missing: ' + name);
-					}
-				}
-			};
-			sec = new ps2hq.data.SectorControl({ serviceId: 'ps2hq-test' });
-			sec.load(10, 'indar', colorHexes);
-
+			//stop: ps2hq.map.SectorHelper.stopAutoUpdateSectors(timer);
 		</script>
 	</body>
 </html>

@@ -37,28 +37,34 @@ ps2hq.data.SectorControl.jsonpCallbacks = { };
 
 ps2hq.data.SectorControl.jsonpHandler = function(requestId) {
 	return function(data) {
-		var map = data.map_list[0];
-		var zoneIds = ps2hq.data.SectorControl.ZONE_IDS;
-
-		var continent;
-		for(var key in zoneIds) {
-			if(zoneIds[key] == map.ZoneId) {
-				continent = key;
-				break;
-			}
-		}
-
-		var idMap = ps2hq.data.SECTOR_ID_MAP[continent];
-		var sectors = { };
-		var rows = map.Regions.Row;
-		for(var i = 0; i < rows.length; i++) {
-			var row = rows[i].RowData;
-			sectors[idMap[row.RegionId]] = ps2hq.data.SectorControl.FACTIONS[row.FactionId];
-		}
+		var sectors = ps2hq.data.SectorControl.processRawData(data);
 
 		ps2hq.data.SectorControl.jsonpCallbacks[requestId](sectors);
 		ps2hq.data.SectorControl.jsonpCallbacks[requestId] = null;
 	};
+};
+
+ps2hq.data.SectorControl.processRawData = function(data) {
+	var map = data.map_list[0];
+	var zoneIds = ps2hq.data.SectorControl.ZONE_IDS;
+
+	var continent;
+	for(var key in zoneIds) {
+		if(zoneIds[key] == map.ZoneId) {
+			continent = key;
+			break;
+		}
+	}
+
+	var idMap = ps2hq.data.SECTOR_ID_MAP[continent];
+	var sectors = { };
+	var rows = map.Regions.Row;
+	for(var i = 0; i < rows.length; i++) {
+		var row = rows[i].RowData;
+		sectors[idMap[row.RegionId]] = ps2hq.data.SectorControl.FACTIONS[row.FactionId];
+	}
+
+	return sectors;
 };
 
 ps2hq.data.SectorControl.FACTIONS = { 1: 'VS', 2: 'NC', 3: 'TR' };

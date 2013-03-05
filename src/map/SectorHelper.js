@@ -1,4 +1,6 @@
 ps2hq.map.SectorHelper = {
+	DEFAULT_FACTION_COLORS: { TR: 'red', NC: 'blue', VS: 'purple' },
+
 	autoUpdateSectors: function(map, options) {
 		interval = interval || 60;
 
@@ -6,17 +8,10 @@ ps2hq.map.SectorHelper = {
 		var serviceId = options.serviceId;
 		var interval = options.interval || 60;
 
-		var factionColors = { TR: 'red', NC: 'blue', VS: 'purple' };
-
 		var colorHexes = function(data) {
-			for(var name in data) {
-				var faction = data[name];
-				var sector = map.getSectorByName(name);
-				if(sector) {
-					sector.poly.setStyle({ fillColor: factionColors[faction] });
-				}
-			}
+			ps2hq.map.SectorHelper.colorHexes(map, data, ps2hq.map.SectorHelper.DEFAULT_FACTION_COLORS);
 		};
+
 		sec = new ps2hq.data.SectorControl({ serviceId: serviceId });
 		sec.load(worldId, map.getContinent(), colorHexes);
 
@@ -31,5 +26,15 @@ ps2hq.map.SectorHelper = {
 
 	stopAutoUpdateSectors: function(timer) {
 		clearInterval(timer);
+	},
+
+	colorHexes: function(map, data, factionColors) {
+		for(var name in data) {
+			var faction = data[name];
+			var sector = map.getSectorByName(name);
+			if(sector) {
+				sector.poly.setStyle({ fillColor: factionColors[faction] });
+			}
+		}
 	}
 };
